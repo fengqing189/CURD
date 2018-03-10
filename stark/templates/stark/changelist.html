@@ -1,0 +1,80 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Title</title>
+    <link rel="stylesheet" href="{% static "stark/bootstrap/css/bootstrap.css" %}"/>
+</head>
+<body>
+<div class="container">
+    <h1>列表页面</h1>
+
+    <div class="list-filter">
+        {% for filter_row in  cl.gen_comb_filter %}
+            <div>
+                {% for col in filter_row  %}
+                    {{ col }}
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+    
+
+    <div class="form-group">
+        <form action="" method="get">
+            <input type="text" name="{{ cl.config.search_key }}" value="{{ cl.search_form_val }}" placeholder="search"
+                   style="display: inline-block" width="30px" class="form-group">
+            <button class="">搜索</button>
+        </form>
+    </div>
+
+    <form action="" method="post">   {# actions #}
+        {% csrf_token %}
+        {% if cl.show_actions %}
+            <div class="form-group">
+            <select name="list_action" class="form-control" style="display:inline-block;width: 200px;">
+                {% for item in cl.modify_actions %}
+                    <option value="{{ item.name }}">{{ item.text }}</option>
+                {% endfor %}
+
+            </select>
+            <button class="btn btn-primary">执行</button>
+        </div>
+        {% endif %}
+
+        {% if cl.show_add_btn %}
+            <a class="btn btn-primary" href="{{ cl.add_url }}">添加</a>
+        {% endif %}
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                {% for item in cl.head_list %}
+                    <th>{{ item }}</th>
+                {% endfor %}
+            </tr>
+            </thead>
+            <tbody>
+            {% for obj in cl.body_list %}
+                <tr>
+                    {% for col in obj %}
+                        <td>{{ col }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <div>
+            <ul class="pagination">
+                {{ cl.page_obj.bootstrap_page_html|safe }}
+            </ul>
+        </div>
+</div>
+
+</form>
+
+
+</body>
+</html>
